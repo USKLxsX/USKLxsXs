@@ -901,6 +901,8 @@ MonoBehaviour:
   height: 4
   cellSize: 1
   gridOrigin: {fileID: 161160569}
+  hasCoverSkill: 1
+  maxSharedSlots: 2
 --- !u!4 &717018328
 Transform:
   m_ObjectHideFlags: 0
@@ -1859,6 +1861,7 @@ MonoBehaviour:
     m_Bits: 64
   ghostValidMat: {fileID: 2100000, guid: 68e831a0c15127c43b50badba7ca4c92, type: 2}
   ghostInvalidMat: {fileID: 2100000, guid: 2d9081bce881e2549b275fe98a3ae4cd, type: 2}
+  ghostSharedMat: {fileID: 2100000, guid: 93fbfb517f7084c4fbeba19abd029291, type: 2}
   dragZOffset: -0.5
 --- !u!1 &1826340506
 GameObject:

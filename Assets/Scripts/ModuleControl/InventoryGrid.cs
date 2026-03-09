@@ -6,14 +6,20 @@ public class InventoryGrid : MonoBehaviour
     public int width = 4;
     public int height = 4;
     public float cellSize = 1f;
-    public Transform gridOrigin; 
+    public Transform gridOrigin;
+
+    [Header("Cover Skill")]
+    public bool hasCoverSkill = false;
+    public int maxSharedSlots = 1;
 
     private GridItem[,] gridData;
+    private GridItem[,] overlapData;
     private List<GridItem> itemsInModule = new List<GridItem>();
 
     void Awake()
     {
         gridData = new GridItem[width, height];
+        overlapData = new GridItem[width, height];
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
@@ -48,11 +54,60 @@ public class InventoryGrid : MonoBehaviour
         {
             int targetX = pivotPos.x + cell.x;
             int targetY = pivotPos.y + cell.y;
-            
-            if (gridData[targetX, targetY] != null && gridData[targetX, targetY] != item)
+
+            if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= height)
+                return false;
+
+            GridItem occupant = gridData[targetX, targetY];
+            if (occupant != null && occupant != item)
+            {
+                if (!hasCoverSkill)
+                    return false;
+
+                // A slot can hold at most two block parts
+                GridItem overlapOccupant = overlapData[targetX, targetY];
+                if (overlapOccupant != null && overlapOccupant != item)
+                    return false;
+            }
+        }
+
+        if (hasCoverSkill)
+        {
+            int newShared = CountNewSharedSlots(item, pivotPos);
+            if (newShared > 0 && GetCurrentSharedSlotCount() + newShared > maxSharedSlots)
                 return false;
         }
+
         return true;
+    }
+
+    // Returns the number of cells that would become newly shared if item is placed at pivotPos.
+    public int CountNewSharedSlots(GridItem item, Vector2Int pivotPos)
+    {
+        int count = 0;
+        foreach (Vector2Int cell in item.GetCurrentShape())
+        {
+            int targetX = pivotPos.x + cell.x;
+            int targetY = pivotPos.y + cell.y;
+
+            if (targetX < 0 || targetX >= width || targetY < 0 || targetY >= height)
+                continue;
+
+            GridItem occupant = gridData[targetX, targetY];
+            if (occupant != null && occupant != item)
+                count++;
+        }
+        return count;
+    }
+
+    private int GetCurrentSharedSlotCount()
+    {
+        int count = 0;
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
+                if (gridData[x, y] != null && overlapData[x, y] != null)
+                    count++;
+        return count;
     }
 
     public void PlaceItem(GridItem item, Vector2Int pivotPos)
@@ -61,7 +116,13 @@ public class InventoryGrid : MonoBehaviour
         
         foreach (Vector2Int cell in item.GetCurrentShape())
         {
-            gridData[pivotPos.x + cell.x, pivotPos.y + cell.y] = item;
+            int x = pivotPos.x + cell.x;
+            int y = pivotPos.y + cell.y;
+
+            if (gridData[x, y] == null)
+                gridData[x, y] = item;
+            else
+                overlapData[x, y] = item; // Shared slot (cover skill)
         }
         
         item.currentGridPosition = pivotPos;
@@ -80,7 +141,16 @@ public class InventoryGrid : MonoBehaviour
             {
                 for (int y = 0; y < height; y++)
                 {
-                    if (gridData[x, y] == item) gridData[x, y] = null;
+                    if (overlapData[x, y] == item)
+                    {
+                        overlapData[x, y] = null;
+                    }
+                    else if (gridData[x, y] == item)
+                    {
+                        // Promote the overlap item to primary if present
+                        gridData[x, y] = overlapData[x, y];
+                        overlapData[x, y] = null;
+                    }
                 }
             }
             itemsInModule.Remove(item);

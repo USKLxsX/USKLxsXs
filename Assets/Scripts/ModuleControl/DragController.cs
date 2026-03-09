@@ -7,6 +7,7 @@ public class DragController : MonoBehaviour
     public LayerMask itemLayer;
     public Material ghostValidMat;
     public Material ghostInvalidMat;
+    public Material ghostSharedMat;
     
     public float dragZOffset = -2f; 
 
@@ -116,7 +117,13 @@ public class DragController : MonoBehaviour
             ghostObject.transform.position = inventoryGrid.GridToWorld(gridPos);
 
             if (inventoryGrid.IsPlacementValid(draggedItem, gridPos))
-                ChangeGhostMaterial(ghostValidMat);
+            {
+                // When cover skill is active and the placement uses shared slots, show the shared material
+                if (inventoryGrid.hasCoverSkill && inventoryGrid.CountNewSharedSlots(draggedItem, gridPos) > 0)
+                    ChangeGhostMaterial(ghostSharedMat != null ? ghostSharedMat : ghostValidMat);
+                else
+                    ChangeGhostMaterial(ghostValidMat);
+            }
             else
                 ChangeGhostMaterial(ghostInvalidMat);
         }

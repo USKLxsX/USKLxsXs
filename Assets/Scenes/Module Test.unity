@@ -312,7 +312,7 @@ MonoBehaviour:
   spawnRotation: {x: 0, y: 0, z: 0, w: 0}
   currentRotationStep: 0
   currentGridPosition: {x: 0, y: 0}
-  isInBackpack: 0
+  isInModule: 0
 --- !u!65 &242007080
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -796,7 +796,7 @@ MonoBehaviour:
   spawnRotation: {x: 0, y: 0, z: 0, w: 0}
   currentRotationStep: 0
   currentGridPosition: {x: 0, y: 0}
-  isInBackpack: 0
+  isInModule: 0
 --- !u!65 &498481271
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -879,7 +879,7 @@ GameObject:
   - component: {fileID: 717018328}
   - component: {fileID: 717018327}
   m_Layer: 0
-  m_Name: BackpackGrid
+  m_Name: ModuleGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1681,7 +1681,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1328729076}
   m_Layer: 0
-  m_Name: Backpack
+  m_Name: Module
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2012,7 +2012,7 @@ MonoBehaviour:
   spawnRotation: {x: 0, y: 0, z: 0, w: 0}
   currentRotationStep: 0
   currentGridPosition: {x: 0, y: 0}
-  isInBackpack: 0
+  isInModule: 0
 --- !u!65 &1922813314
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class InventoryGrid : MonoBehaviour
     public Transform gridOrigin; 
 
     private GridItem[,] gridData;
-    private List<GridItem> itemsInBackpack = new List<GridItem>();
+    private List<GridItem> itemsInModule = new List<GridItem>();
 
     void Awake()
     {
@@ -66,15 +66,15 @@ public class InventoryGrid : MonoBehaviour
         
         item.currentGridPosition = pivotPos;
         item.transform.position = GridToWorld(pivotPos);
-        item.isInBackpack = true; // Mark as in backpack
+        item.isInModule = true; // Mark as in module
         
-        if (!itemsInBackpack.Contains(item))
-            itemsInBackpack.Add(item);
+        if (!itemsInModule.Contains(item))
+            itemsInModule.Add(item);
     }
 
     public void RemoveItem(GridItem item)
     {
-        if (itemsInBackpack.Contains(item))
+        if (itemsInModule.Contains(item))
         {
             for (int x = 0; x < width; x++)
             {
@@ -83,15 +83,15 @@ public class InventoryGrid : MonoBehaviour
                     if (gridData[x, y] == item) gridData[x, y] = null;
                 }
             }
-            itemsInBackpack.Remove(item);
-            item.isInBackpack = false;
+            itemsInModule.Remove(item);
+            item.isInModule = false;
         }
     }
 
     public Dictionary<string, Vector2Int> ExportInventory()
     {
         Dictionary<string, Vector2Int> exportedData = new Dictionary<string, Vector2Int>();
-        foreach (GridItem item in itemsInBackpack)
+        foreach (GridItem item in itemsInModule)
         {
             exportedData.Add(item.itemName, item.currentGridPosition);
         }

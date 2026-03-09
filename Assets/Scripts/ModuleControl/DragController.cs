@@ -16,7 +16,7 @@ public class DragController : MonoBehaviour
     private bool isDragging = false;
 
     private Vector3 mouseStartPos;
-    private bool wasInBackpackBeforeDrag;
+    private bool wasInModuleBeforeDrag;
 
     void Update()
     {
@@ -46,7 +46,7 @@ public class DragController : MonoBehaviour
             {
                 isDragging = true;
                 mouseStartPos = Input.mousePosition;
-                wasInBackpackBeforeDrag = draggedItem.isInBackpack;
+                wasInModuleBeforeDrag = draggedItem.isInModule;
 
                 inventoryGrid.RemoveItem(draggedItem);
                 
@@ -80,7 +80,7 @@ public class DragController : MonoBehaviour
 
         bool isClick = Vector3.Distance(Input.mousePosition, mouseStartPos) < 5f;
 
-        if (isClick && wasInBackpackBeforeDrag)
+        if (isClick && wasInModuleBeforeDrag)
         {
             StartCoroutine(SmoothReturn(draggedItem));
         }
